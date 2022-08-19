@@ -1,0 +1,191 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/moon.css">
+		<link rel="stylesheet" href="plugin/drawer/drawer.css" />
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<!--Slide 1 : Introduction -->
+					<section>
+						<h1 class="fragment fade-up">Hello NUMBAT</h1>
+						<p class="fragment fade-up" >I am Abhishek from Mumbai, India</p>
+						<p class="fragment fade-up"> GSoC-22 Contributor</p>
+					</section>
+      				<section><p class="fragment fade-up">Today I want to share with you some interesting work in  
+						<emph>texor</emph> and <emph>rebib</emph>  
+					</p></section>
+				</section>
+				<!--Slide 2 : texor -->
+				<section>
+					<!--Slide 2.1 : texor introduction -->
+					<section data-background-iframe="http://127.0.0.1:5500/texor/" data-background-interactive>
+						<div style="position: absolute; width: 40%; right: -200px; bottom: -500px; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;">
+							<h2>texor package</h2>
+							<p class="fragment fade-up">texor is a toolkit package that solves multiple challenges that occour in conversion of LaTeX source files to a web friendly RJ-web-article format.</p>
+						</div>
+						
+						
+					</section>
+					<!--Slide 2.2 : Challenges -->
+					<section>
+						<h3>The Challenges</h2>
+						<p class="fragment fade-up">LaTeX is a very descriptive language with a lot of functionality to extend it. 
+							Hence converting content from LaTeX is a bit tricky.</p>
+						<p class="fragment fade-up"> Some of these are :</p>
+						<ul class="fragment fade-up">
+							<li>Article Meta Data</li>
+							<li>Math Compatibility</li>
+							<li>Handling Code Environments</li>
+							<li>Table/Figure Compatibility</li>
+							<li>Bibliography</li>
+						</ul>
+					</section>
+				</section>
+				
+				<!--Slide 3 : Stream Editor -->
+				<section data-auto-animate>
+					<!--Slide 3.1 : Introduction -->
+					<section>
+						<h2 data-id="code-title">Stream Editor</h2>
+						<span class="fragment fade-up"> Match&nbsp;&nbsp;&nbsp;</span>
+						<span class="fragment fade-up"> Find&nbsp;&nbsp;&nbsp;</span>
+						<span class="fragment fade-up"> Replace </span>
+					</section>
+					<!--Slide 3.2 : Stream editor implementation -->
+					<section>
+						<h3 data-id="code-title">Stream Editor</h3>
+						<pre data-id="code-animation"><code class="hljs r" style="font-size: smaller;" data-trim data-line-numbers="|2|4-12|15|">
+						stream_editor <- function(raw_lines, pattern, target, replacement) {
+							break_points <- which(grepl(pattern, raw_lines))
+							#check for length of break_points to avoid no matches
+							if (!identical(break_points, integer(0))) {
+								for (iterator in seq_along(break_points)) {
+									modification_line <- raw_lines[break_points[iterator]]
+									modified_line <- gsub(target, replacement, modification_line)
+									raw_lines[break_points[iterator]] <- modified_line
+								}
+								message(paste(
+								"Found ", length(break_points), "Matches for target :", target))
+							} else {
+								message(paste("Found 0 Matches for target : ", target))
+							}
+							return(raw_lines)
+						}
+						</code></pre>
+					</section>
+					<!--Slide 3.3 : Example -->
+				</section>
+				<!--Slide 4 : Lua Filters -->
+				<section data-auto-animate>
+					<!--Slide 4.1 : Introduction -->
+					<section>
+						<h2 data-id="code-title">Pandoc Lua Filters</h2>
+						<p class="fragment fade-up">To manipulate the AST we use pandoc filters.</p>
+					</section>
+					<!--Slide 4.2 : Writing lua filter -->
+					<section>
+						<h3 data-id="code-title">My first Lua Filter</h3>
+						<pre data-id="code-animation"><code class="hljs lua" style="font-size: smaller;" data-trim data-line-numbers>
+							function Div(el)
+    							if el.classes[1] == 'thebibliography' then
+        							return { }
+    							end
+							end 	
+						</code></pre>
+					</section>
+					<!--Slide 4.3 : Writing lua filter -->
+					<section>
+						<h3 data-id="code-title">Math Filter</h3>
+						<pre data-id="code-animation"><code class="hljs lua" style="font-size: smaller;" data-trim data-line-numbers>
+							function Math (m)
+  								local left = m.mathtype == 'InlineMath' and '\\(' or '$$'
+  								local right = m.mathtype == 'InlineMath' and '\\)' or '$$'
+  								return pandoc.RawInline('markdown', left .. m.text .. right)
+							end
+						</code></pre>
+					</section>
+					<!--Slide 4.4 : More Filters -->
+					<section>
+						<h3>For More Filters</h3>
+						<p>
+							<a href="https://github.com/Abhi-1U/tex-lua-filters"><img src="https://gh-card.dev/repos/Abhi-1U/tex-lua-filters.svg?fullname="></a> 
+						</p>
+					</section>
+				</section>
+				<!--Slide 5 : Rebib -->
+				<section data-auto-animate>
+						<!--Slide 5.1 : Rebib Introduction -->
+						<section data-background-iframe="http://127.0.0.1:5500/rebib/" data-background-interactive>
+							<div style="position: absolute; width: 40%; right: -200px; bottom: -500px; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;">
+								<h2>rebib package</h2>
+								<p class="fragment fade-up">rebib is a tool kit package specifically for bibliography challenges.</p>
+							</div>
+						</section>
+						<!--Slide 5.2 : Rebib example -->
+						<section>
+							<h2>Sample Conversion</h2>
+							<pre data-id="code-animation"><code class="hljs latex" style="font-size: smaller;" data-trim data-line-numbers>
+							\bibitem[R Core Team]{R}
+							R Core Team
+							\newblock R: A Language and Environment for Statistical Computing
+							\newblock \emph{R Foundation for Statistical Computing}, Vienna, Austria 
+							\penalty0 2016.
+							\newblock URL : \url{https://www.R-project.org/}, ISBN 3-900051-07-0
+							</code></pre>
+							<h2 class="fragment fade-in">To</h2>
+							<pre data-id="code-animation"><code class="fragment fade-in hljs latex" style="font-size: smaller;" data-trim data-line-numbers>
+								@book{R,
+									author = {{R Core Team}},
+									title = {{R: A Language and Environment for Statistical Computing}},
+									publisher = {R Foundation for Statistical Computing Vienna Austria},
+									year = {2016},
+									url = {https://www.R-project.org/},
+									isbn = {3-900051-07-0}
+								}
+							</code></pre>
+						</section>
+				</section>
+				<section style="text-align: left;">
+					<section>
+						<h2>Demonstrations</h2>
+					</section>
+					<section>
+						<h2>Any Questions ?</h2>
+					</section>
+					<section>
+						<h2>Thank You !</h2>
+					</section>
+				</section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/drawer/drawer.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealDrawer ]
+			});
+		</script>
+	</body>
+</html>
